@@ -2,6 +2,7 @@
 微信授权获取用户基本信息
 # 调用说明(1)express
 ### 1. 通过URL换取code, 此路由为需要获取授权信息 users.js
+        var oauth = require("wxoauth");
         router.get('/', function(req, res, next) {
             var redirect_url = 'http://' + req.headers.host + '/oauth/callback';
             redirect_url += '?callback_url=' + req.originalUrl;
@@ -11,6 +12,7 @@
         });
 
 ### 2、 获取用户基本信息 oauth.js
+        var oauth = require("wxoauth");
         var code = req.query.code;
         var callback_url = req.query.callback_url;
         oauth.getAuthAccessTokenByCode(code, appid, secret).then(oauth.getUserInfo).done(function(ret) {
@@ -25,6 +27,7 @@
 
 ========generator(koa2调用说明)======
 ### 1. 通过URL换取code, 此路由为需要获取授权信息 users.js
+        var oauth = require("wxoauth");
         router.get('/', async function(ctx, next) {
             var redirect_url = 'http://' + ctx.host + '/oauth/callback'; //跳转路由
             redirect_url += '?callback_url=' + urlencode(ctx.originalUrl);
@@ -33,6 +36,7 @@
         });
 
 ### 2、 获取用户基本信息 oauth.js
+        var oauth = require("wxoauth");
         router.get('/callback', async function(ctx, next){
             var code = ctx.query.code;
             var callback_url = ctx.query.callback_url;
