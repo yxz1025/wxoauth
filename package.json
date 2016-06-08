@@ -1,0 +1,25 @@
+{
+  "name": "wxoauth",
+  "version": "1.0.0",
+  "description": "微信授权获取用户基本信息和access_token",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+  	"q": "1.4.1",
+  	"urlencode": "1.1.0",
+  	"request": "*"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yxz1025/wxoauth.git"
+  },
+  "keywords": [
+    "Mongodb",
+    "node",
+    "easy"
+  ],
+  "author": "yxz1025",
+  "license": "ISC"
+}
