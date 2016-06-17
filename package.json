@@ -1,24 +1,25 @@
 {
   "name": "wxoauth",
-  "version": "1.0.0",
-  "description": "微信授权获取用户基本信息和access_token",
+  "version": "1.1.2",
+  "description": "微信授权获取用户基本信息和access_token,采用co函数实现代码同步执行",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-  	"q": "1.4.1",
   	"urlencode": "1.1.0",
-  	"request": "*"
+  	"request": "*",
+    "bluebird": "3.4.0",
+    "co": "4.6.0"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/yxz1025/wxoauth.git"
   },
   "keywords": [
-    "Mongodb",
+    "wxoauth",
     "node",
-    "easy"
+    "weixin"
   ],
   "author": "yxz1025",
   "license": "ISC"

@@ -2,8 +2,8 @@
  *微信授权获取用户基本信息，通过code
  */
 var urlencode = require('urlencode');
-var Q = require("q");
-var request = require("request");
+var Promise = require('bluebird');
+var request = Promise.promisifyAll(require("request"));
 //微信授权获取基本信息
 var Oauth = {
     //换取code 此处scope支持静默和动态获取两种
@@ -13,89 +13,32 @@ var Oauth = {
     },
 
     //获取access_token
-    getAuthAccessTokenByCode: function(code, appid, secret) {
-        // 获取微信签名所需的access_token
-        var deferred = Q.defer();
-        request('https://api.weixin.qq.com/sns/oauth2/access_token?appid=' + appid + '&secret=' + secret + '&code=' + code + '&grant_type=authorization_code', function(err, response, data) {
-            if (err) {
-                deferred.reject(err);
-            }
-            if (!err && response.statusCode == 200) {
-                try {
-                    var resp = JSON.parse(data);
-                    deferred.resolve(resp);
-                } catch (e) {
-                    deferred.reject(e.message);
-                }
-            }
-        });
-        return deferred.promise;
-    },
+    getAuthAccessTokenByCode: co.wrap(function*(code, appid, secret){
+        var content = yield request.getAsync('https://api.weixin.qq.com/sns/oauth2/access_token?appid=' + appid + '&secret=' + secret + '&code=' + code + '&grant_type=authorization_code');
+        return JSON.parse(content);
+    }),
 
     //获取用户基本信息
-    getUserInfo: function(obj) {
-        var access_token = obj.access_token;
-        var openid = obj.openid;
-        var deferred = Q.defer();
-        request('https://api.weixin.qq.com/sns/userinfo?access_token=' + access_token + '&openid=' + openid + '&lang=zh_CN', function(err, response, data) {
-            if (err) {
-                deferred.reject(err);
-            }
-            if (!err && response.statusCode == 200) {
-                try {
-                    var resp = JSON.parse(data);
-                    deferred.resolve(resp);
-                } catch (e) {
-                    deferred.reject(e.message);
-                }
-            }
-        });
-        return deferred.promise;
-    },
+    getUserInfo: co.wrap(function*(access_token, openid){
+        var userinfo = yield request.getAsync('https://api.weixin.qq.com/sns/userinfo?access_token=' + access_token + '&openid=' + openid + '&lang=zh_CN');
+        return JSON.parse(userinfo);
+    }),
 
     //检查token是否失效
-    checkAccessToken: function(access_token, openid) {
-        var deferred = Q.defer();
-        request('https://api.weixin.qq.com/sns/auth?access_token=' + access_token + '&openid=' + openid, function(err, response, data) {
-            if (err) {
-                deferred.reject(err);
-            }
-            if (!err && response.statusCode == 200) {
-                try {
-                    var resp = JSON.parse(data);
-                    deferred.resolve(resp);
-                } catch (e) {
-                    deferred.reject(e.message);
-                }
-            }
-        });
-        return deferred.promise;
-    },
+    checkAccessToken: co.wrap(function*(access_token, openid){
+        var check_token = yield request.getAsync('https://api.weixin.qq.com/sns/auth?access_token=' + access_token + '&openid=' + openid);
+        return JSON.parse(check_token);
+    }),
 
     //刷新token
-    refreshToken: function(refresh_token, appid) {
-        var deferred = Q.defer();
-        https.get('https://api.weixin.qq.com/sns/oauth2/refresh_token?appid=' + appid + '&grant_type=refresh_token&refresh_token=' + refresh_token, function(_res) {
-            var str = '';
-            _res.on('data', function(data) {
-                str += data;
-            });
-            _res.on('end', function() {
-                console.log('return access_token:  ' + str);
-                try {
-                    var resp = JSON.parse(str);
-                    deferred.resolve(resp);
-                } catch (e) {
-                    deferred.reject(e.message);
-                }
-            });
-        });
-        return deferred.promise;
-    },
+    refreshToken: co.wrap(function*(refresh_token, appid){
+        var refresh_token = yield request.getAsync('https://api.weixin.qq.com/sns/oauth2/refresh_token?appid=' + appid + '&grant_type=refresh_token&refresh_token=' + refresh_token);
+        return JSON.parse(refresh_token);
+    }),
 };
 module.exports = Oauth;
 
-//调用说明
+// 调用说明
 // 1. 通过URL换取code, 此路由为需要获取授权信息 users.js
 // router.get('/', function(req, res, next) {
 //     var redirect_url = 'http://' + req.headers.host + '/oauth/callback';
