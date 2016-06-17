@@ -16,25 +16,25 @@ var Oauth = {
     //获取access_token
     getAuthAccessTokenByCode: co.wrap(function*(code, appid, secret){
         var content = yield request.getAsync('https://api.weixin.qq.com/sns/oauth2/access_token?appid=' + appid + '&secret=' + secret + '&code=' + code + '&grant_type=authorization_code');
-        return content.body;
+        return JSON.parse(content.body);
     }),
 
     //获取用户基本信息
     getUserInfo: co.wrap(function*(access_token, openid){
         var userinfo = yield request.getAsync('https://api.weixin.qq.com/sns/userinfo?access_token=' + access_token + '&openid=' + openid + '&lang=zh_CN');
-        return userinfo.body;
+        return JSON.parse(userinfo.body);
     }),
 
     //检查token是否失效
     checkAccessToken: co.wrap(function*(access_token, openid){
         var check_token = yield request.getAsync('https://api.weixin.qq.com/sns/auth?access_token=' + access_token + '&openid=' + openid);
-        return check_token.body;
+        return JSON.parse(check_token.body);
     }),
 
     //刷新token
     refreshToken: co.wrap(function*(refresh_token, appid){
         var refresh_token = yield request.getAsync('https://api.weixin.qq.com/sns/oauth2/refresh_token?appid=' + appid + '&grant_type=refresh_token&refresh_token=' + refresh_token);
-        return refresh_token.body;
+        return JSON.parse(refresh_token.body);
     }),
 };
 module.exports = Oauth;
