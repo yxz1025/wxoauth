@@ -14,7 +14,7 @@ Oauth.prototype.getAuthorizeURL = function(url, appid, scope) {
     return callback_url;
 };
 
-//获取access_token 返回一个promise
+//获取access_token 返回一个加上co函数表示为将一个generator变成promise yield 和 await都是promise
 Oauth.prototype.getAuthAccessTokenByCode = co.wrap(function* (code, appid, secret) {
     var content = yield request.getAsync('https://api.weixin.qq.com/sns/oauth2/access_token?appid=' + appid + '&secret=' + secret + '&code=' + code + '&grant_type=authorization_code');
     return JSON.parse(content.body);

@@ -15,12 +15,12 @@
         var oauth = require("wxoauth");
         var code = req.query.code;
         var callback_url = req.query.callback_url;
-        var content = oauth.getAuthAccessTokenByCode(code, appid, secret);
-        var userinfo = oauth.getUserInfo(content.access_token, content.openid);
-        //保存用户授权后的数据
-        req.session.openid = userinfo.openid;
-        req.session.save();
-        res.redirect(callback_url);
+        oauth.getUserInfo(code, appid, secret).then(function(userinfo){
+            //保存用户授权后的数据
+            req.session.openid = userinfo.openid;
+            req.session.save();
+            res.redirect(callback_url);
+        });
 
 ========generator(koa2调用说明)======
 ### 1. 通过URL换取code, 此路由为需要获取授权信息 users.js
@@ -37,6 +37,5 @@
         router.get('/callback', async function(ctx, next){
             var code = ctx.query.code;
             var callback_url = ctx.query.callback_url;
-            var content = oauth.getAuthAccessTokenByCode(code, appid, secret);
-            var userinfo = oauth.getUserInfo(content.access_token, content.openid);
+            var userinfo = await oauth.getUserInfo(code, appid, secret);
         })
