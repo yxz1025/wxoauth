@@ -4,6 +4,7 @@
 var urlencode = require('urlencode');
 var Promise = require('bluebird');
 var request = Promise.promisifyAll(require("request"));
+var co = require("co");
 //微信授权获取基本信息
 var Oauth = {
     //换取code 此处scope支持静默和动态获取两种
